@@ -21,6 +21,16 @@ npx tsc --init
 # Install ts-node-dev for autoreload
 npm install ts-node-dev -D
 
+# Install knex
+npm install knex
+
+# Install SQLite3
+npm install sqlite3
+
+# Run migrations
+npx knex migrate:latest --knexfile knexfile.ts migrate:latest
+npm run knex
+
 # Execute server as dev
 ts-node-dev src/server.ts
 npm run dev
