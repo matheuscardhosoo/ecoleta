@@ -28,8 +28,12 @@ npm install knex
 npm install sqlite3
 
 # Run migrations
-npx knex migrate:latest --knexfile knexfile.ts migrate:latest
-npm run knex
+npx knex --knexfile knexfile.ts migrate:latest
+npm run knex:migrate
+
+# Populate database
+knex --knexfile knexfile.ts seed:run
+npm run knex:seed
 
 # Execute server as dev
 ts-node-dev src/server.ts
