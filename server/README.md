@@ -35,6 +35,10 @@ npm run knex:migrate
 knex --knexfile knexfile.ts seed:run
 npm run knex:seed
 
+# Install cors
+npm install cors
+npm install @types/cors -D
+
 # Execute server as dev
 ts-node-dev src/server.ts
 npm run dev
@@ -51,3 +55,15 @@ npm run dev
 
 - **Request parameters**: mandatory URL parameters.
 - **Query parameters**: optional URL parameters.
+
+### Controller
+
+- **index**: list all entities.
+- **show**: show only one entity.
+- **create**: insert a new entity.
+- **update**: update an entity attribute.
+- **delete**: delete an entity.
+
+### Service pattern
+
+### Repository pattern.
