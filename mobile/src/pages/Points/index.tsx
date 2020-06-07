@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Constants from "expo-constants";
 import MapView, { Marker } from "react-native-maps";
+import * as Location from "expo-location";
 import {
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -24,11 +26,31 @@ const Points = () => {
   const navigator = useNavigation();
   const [items, setItems] = useState<Array<Item>>([]);
   const [selectedItemsIds, setSelectedItemsIds] = useState<Array<Number>>([]);
+  const [initialPosition, setInitialPosition] = useState<[number, number]>([
+    0,
+    0,
+  ]);
 
   useEffect(() => {
     api.get("items").then((response) => {
       setItems(response.data);
     });
+  }, []);
+
+  useEffect(() => {
+    const loadPosition = async () => {
+      const { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Ooops...",
+          "Precisamos de sua localizaço para obter a localizaço."
+        );
+      }
+      const location = await Location.getCurrentPositionAsync();
+      const { latitude, longitude } = location.coords;
+      setInitialPosition([latitude, longitude]);
+    };
+    loadPosition();
   }, []);
 
   const handleNavigateGoBack = () => {
@@ -66,32 +88,34 @@ const Points = () => {
         </Text>
 
         <View style={styles.mapContainer}>
-          <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: -27.2092052,
-              longitude: -49.6401092,
-              latitudeDelta: 0.014,
-              longitudeDelta: 0.014,
-            }}
-          >
-            <Marker
-              onPress={handleNavigateToDetail}
-              style={styles.mapMarker}
-              coordinate={{ latitude: -27.2092052, longitude: -49.6401092 }}
+          {(initialPosition[0] !== 0 || initialPosition[1] !== 0) && (
+            <MapView
+              style={styles.map}
+              initialRegion={{
+                latitude: initialPosition[0],
+                longitude: initialPosition[1],
+                latitudeDelta: 0.014,
+                longitudeDelta: 0.014,
+              }}
             >
-              <View style={styles.mapMarkerContainer}>
-                <Image
-                  style={styles.mapMarkerImage}
-                  source={{
-                    uri:
-                      "https://images.unsplash.com/photo-1548462859-6aa33b1691ae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
-                  }}
-                />
-                <Text style={styles.mapMarkerTitle}>Mercado</Text>
-              </View>
-            </Marker>
-          </MapView>
+              <Marker
+                onPress={handleNavigateToDetail}
+                style={styles.mapMarker}
+                coordinate={{ latitude: -27.2092052, longitude: -49.6401092 }}
+              >
+                <View style={styles.mapMarkerContainer}>
+                  <Image
+                    style={styles.mapMarkerImage}
+                    source={{
+                      uri:
+                        "https://images.unsplash.com/photo-1548462859-6aa33b1691ae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
+                    }}
+                  />
+                  <Text style={styles.mapMarkerTitle}>Mercado</Text>
+                </View>
+              </Marker>
+            </MapView>
+          )}
         </View>
       </View>
 
