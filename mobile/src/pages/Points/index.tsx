@@ -13,8 +13,13 @@ import {
 } from "react-native";
 import { SvgUri } from "react-native-svg";
 import { Feather as Icon } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import api from "../../services/Api";
+
+interface RouteParams {
+  uf: string;
+  city: string;
+}
 
 interface Item {
   id: number;
@@ -32,6 +37,8 @@ interface Point {
 
 const Points = () => {
   const navigator = useNavigation();
+  const route = useRoute();
+  const routeParams = route.params as RouteParams;
   const [items, setItems] = useState<Array<Item>>([]);
   const [points, setPoints] = useState<Array<Point>>([]);
   const [selectedItemsIds, setSelectedItemsIds] = useState<Array<Number>>([]);
@@ -47,11 +54,12 @@ const Points = () => {
   }, []);
 
   useEffect(() => {
+    console.log(routeParams);
     api
       .get("points", {
         params: {
-          city: "Florianpolis",
-          uf: "SC",
+          city: routeParams.city,
+          uf: routeParams.uf,
           items: selectedItemsIds,
         },
       })
