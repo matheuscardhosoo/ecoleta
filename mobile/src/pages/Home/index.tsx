@@ -1,11 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, ImageBackground, StyleSheet, Text } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
+import RNPickerSelect from "react-native-picker-select";
 import { Feather as Icon } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import ibge from "../../services/ibge";
+
+interface IbgeUf {
+  sigla: string;
+}
+
+interface IbgeMunicipios {
+  nome: string;
+}
 
 const Home = () => {
   const navigator = useNavigation();
+  const [ibgeUFs, setIbgeUFs] = useState<Array<IbgeUf>>([]);
+  const [ibgeCities, setIbgeCities] = useState<Array<IbgeMunicipios>>([]);
+  const [selectedUF, setSelectedUF] = useState("0");
+  const [selectedCity, setSelectedCity] = useState("0");
+
+  useEffect(() => {
+    ibge.get("estados").then((response) => {
+      setIbgeUFs(response.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (selectedUF === "0") {
+      return;
+    }
+    ibge.get(`estados/${selectedUF}/municipios`).then((response) => {
+      setIbgeCities(response.data);
+    });
+  }, [selectedUF]);
+
+  const handleSelectedUF = (uf: string) => {
+    setSelectedUF(uf);
+  };
+
+  const handleSelectedCity = (city: string) => {
+    setSelectedCity(city);
+  };
 
   const handleNavigateToPoints = () => {
     navigator.navigate("Points");
@@ -26,6 +63,20 @@ const Home = () => {
         </Text>
       </View>
       <View style={styles.footer}>
+        <RNPickerSelect
+          onValueChange={(value) => handleSelectedUF(value)}
+          items={ibgeUFs.map((uf) => ({
+            label: uf.sigla,
+            value: uf.sigla,
+          }))}
+        />
+        <RNPickerSelect
+          onValueChange={(value) => handleSelectedCity(value)}
+          items={ibgeCities.map((city) => ({
+            label: city.nome,
+            value: city.nome,
+          }))}
+        />
         <RectButton style={styles.button} onPress={handleNavigateToPoints}>
           <View style={styles.buttonIcon}>
             <Text>
