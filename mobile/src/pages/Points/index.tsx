@@ -1,9 +1,129 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import Constants from "expo";
+import Constants from "expo-constants";
+import MapView, { Marker } from "react-native-maps";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SvgUri } from "react-native-svg";
+import { Feather as Icon } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const Points = () => {
-  return <View></View>;
+  const navigator = useNavigation();
+
+  const handleNavigateGoBack = () => {
+    navigator.goBack();
+  };
+
+  const handleNavigateToDetail = () => {
+    navigator.navigate("Detail");
+  };
+
+  return (
+    <>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={handleNavigateGoBack}>
+          <Icon name="arrow-left" size={20} color="#34CB79" />
+        </TouchableOpacity>
+
+        <Text style={styles.title}>Bem vindo.</Text>
+        <Text style={styles.description}>
+          Encontre no mapa um ponto de coleta.
+        </Text>
+
+        <View style={styles.mapContainer}>
+          <MapView
+            style={styles.map}
+            initialRegion={{
+              latitude: -27.2092052,
+              longitude: -49.6401092,
+              latitudeDelta: 0.014,
+              longitudeDelta: 0.014,
+            }}
+          >
+            <Marker
+              onPress={handleNavigateToDetail}
+              style={styles.mapMarker}
+              coordinate={{ latitude: -27.2092052, longitude: -49.6401092 }}
+            >
+              <View style={styles.mapMarkerContainer}>
+                <Image
+                  style={styles.mapMarkerImage}
+                  source={{
+                    uri:
+                      "https://images.unsplash.com/photo-1548462859-6aa33b1691ae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
+                  }}
+                />
+                <Text style={styles.mapMarkerTitle}>Mercado</Text>
+              </View>
+            </Marker>
+          </MapView>
+        </View>
+      </View>
+
+      <View style={styles.itemsContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+        >
+          <TouchableOpacity style={styles.item} onPress={() => {}}>
+            <SvgUri
+              width={42}
+              height={42}
+              uri="http://192.168.169.105:3333/uploads/lampadas.svg"
+            />
+            <Text style={styles.itemTitle}>Lampadas</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.item} onPress={() => {}}>
+            <SvgUri
+              width={42}
+              height={42}
+              uri="http://192.168.169.105:3333/uploads/lampadas.svg"
+            />
+            <Text style={styles.itemTitle}>Lampadas</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.item} onPress={() => {}}>
+            <SvgUri
+              width={42}
+              height={42}
+              uri="http://192.168.169.105:3333/uploads/lampadas.svg"
+            />
+            <Text style={styles.itemTitle}>Lampadas</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.item} onPress={() => {}}>
+            <SvgUri
+              width={42}
+              height={42}
+              uri="http://192.168.169.105:3333/uploads/lampadas.svg"
+            />
+            <Text style={styles.itemTitle}>Lampadas</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.item} onPress={() => {}}>
+            <SvgUri
+              width={42}
+              height={42}
+              uri="http://192.168.169.105:3333/uploads/lampadas.svg"
+            />
+            <Text style={styles.itemTitle}>Lampadas</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.item} onPress={() => {}}>
+            <SvgUri
+              width={42}
+              height={42}
+              uri="http://192.168.169.105:3333/uploads/lampadas.svg"
+            />
+            <Text style={styles.itemTitle}>Lampadas</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+    </>
+  );
 };
 
 export default Points;
