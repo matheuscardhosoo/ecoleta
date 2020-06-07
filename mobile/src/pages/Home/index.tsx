@@ -45,7 +45,10 @@ const Home = () => {
   };
 
   const handleNavigateToPoints = () => {
-    navigator.navigate("Points");
+    navigator.navigate("Points", {
+      uf: selectedUF,
+      city: selectedCity,
+    });
   };
 
   return (
@@ -77,7 +80,11 @@ const Home = () => {
             value: city.nome,
           }))}
         />
-        <RectButton style={styles.button} onPress={handleNavigateToPoints}>
+        <RectButton
+          style={styles.button}
+          onPress={handleNavigateToPoints}
+          enabled={selectedUF !== "0" && selectedCity !== "0"}
+        >
           <View style={styles.buttonIcon}>
             <Text>
               <Icon name="arrow-right" color="#FFF" size={24} />
