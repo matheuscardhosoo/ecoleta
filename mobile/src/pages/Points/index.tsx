@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Constants from "expo-constants";
 import MapView, { Marker } from "react-native-maps";
 import {
@@ -12,9 +12,24 @@ import {
 import { SvgUri } from "react-native-svg";
 import { Feather as Icon } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import api from "../../services/Api";
+
+interface Item {
+  id: number;
+  title: string;
+  image_url: string;
+}
 
 const Points = () => {
   const navigator = useNavigation();
+  const [items, setItems] = useState<Array<Item>>([]);
+  const [selectedItemsIds, setSelectedItemsIds] = useState<Array<Number>>([]);
+
+  useEffect(() => {
+    api.get("items").then((response) => {
+      setItems(response.data);
+    });
+  }, []);
 
   const handleNavigateGoBack = () => {
     navigator.goBack();
@@ -22,6 +37,20 @@ const Points = () => {
 
   const handleNavigateToDetail = () => {
     navigator.navigate("Detail");
+  };
+
+  const handleSelectItem = (id: Number) => {
+    const alreadySelected = selectedItemsIds.findIndex(
+      (itemId) => itemId === id
+    );
+    if (alreadySelected >= 0) {
+      const filteredItemsIds = selectedItemsIds.filter(
+        (itemId) => itemId !== id
+      );
+      setSelectedItemsIds(filteredItemsIds);
+    } else {
+      setSelectedItemsIds([...selectedItemsIds, id]);
+    }
   };
 
   return (
@@ -72,54 +101,20 @@ const Points = () => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 20 }}
         >
-          <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <SvgUri
-              width={42}
-              height={42}
-              uri="http://192.168.169.105:3333/uploads/lampadas.svg"
-            />
-            <Text style={styles.itemTitle}>Lampadas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <SvgUri
-              width={42}
-              height={42}
-              uri="http://192.168.169.105:3333/uploads/lampadas.svg"
-            />
-            <Text style={styles.itemTitle}>Lampadas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <SvgUri
-              width={42}
-              height={42}
-              uri="http://192.168.169.105:3333/uploads/lampadas.svg"
-            />
-            <Text style={styles.itemTitle}>Lampadas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <SvgUri
-              width={42}
-              height={42}
-              uri="http://192.168.169.105:3333/uploads/lampadas.svg"
-            />
-            <Text style={styles.itemTitle}>Lampadas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <SvgUri
-              width={42}
-              height={42}
-              uri="http://192.168.169.105:3333/uploads/lampadas.svg"
-            />
-            <Text style={styles.itemTitle}>Lampadas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <SvgUri
-              width={42}
-              height={42}
-              uri="http://192.168.169.105:3333/uploads/lampadas.svg"
-            />
-            <Text style={styles.itemTitle}>Lampadas</Text>
-          </TouchableOpacity>
+          {items.map((item) => (
+            <TouchableOpacity
+              key={String(item.id)}
+              style={[
+                styles.item,
+                selectedItemsIds.includes(item.id) ? styles.selectedItem : {},
+              ]}
+              activeOpacity={0.6}
+              onPress={() => handleSelectItem(item.id)}
+            >
+              <SvgUri width={42} height={42} uri={item.image_url} />
+              <Text style={styles.itemTitle}>{item.title}</Text>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       </View>
     </>
